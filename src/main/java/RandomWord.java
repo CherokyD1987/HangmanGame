@@ -8,9 +8,10 @@ public class RandomWord {
     private final List<String> wordsList = new ArrayList<>();
     private final Random rand = new Random();
     private static final int MIN_WORD_LENGTH = 7;
+    private final Path path = Paths.get("src\\main\\resources\\words_5000.txt");
 
-    public RandomWord(String path) {
-        Path filePath = Paths.get(path);
+    public RandomWord() {
+        Path filePath = Paths.get(path.toUri());
         try (BufferedReader reader = Files.newBufferedReader(filePath)) {
             String line, word;
             while ((line = reader.readLine()) != null) {
