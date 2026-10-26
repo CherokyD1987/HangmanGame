@@ -8,11 +8,10 @@ public class RandomWord {
     private final List<String> wordsList = new ArrayList<>();
     private final Random rand = new Random();
     private static final int MIN_WORD_LENGTH = 7;
-    private final Path path = Paths.get("src\\main\\resources\\words_5000.txt");
+    private static final Path DICCIONARIO_PATH_RU = Paths.get("src","main", "resources", "words_5000_ru.txt");
 
     public RandomWord() {
-        Path filePath = Paths.get(path.toUri());
-        try (BufferedReader reader = Files.newBufferedReader(filePath)) {
+        try (BufferedReader reader = Files.newBufferedReader(DICCIONARIO_PATH_RU)) {
             String line, word;
             while ((line = reader.readLine()) != null) {
                 word = line.trim().toLowerCase();
@@ -21,10 +20,10 @@ public class RandomWord {
                 }
             }
         } catch (IOException e) {
-            throw new IllegalStateException("Не удалось загрузить словарь: " + filePath, e);
+            throw new IllegalStateException("Не удалось загрузить словарь: " + DICCIONARIO_PATH_RU, e);
         }
         if (wordsList.isEmpty()) {
-            throw new IllegalStateException("Словарь пуст или в нём нет подходящих слов: " + filePath);
+            throw new IllegalStateException("Словарь пуст или в нём нет подходящих слов: " + DICCIONARIO_PATH_RU);
         }
     }
 

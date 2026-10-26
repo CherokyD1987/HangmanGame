@@ -3,6 +3,19 @@ import java.util.Set;
 
 public class GameRound {
 
+    public enum GuessResult {
+        ALREADY_NAMED,
+        HIT,
+        MISS
+    }
+
+    public enum GameState {
+        PLAYING,
+        WON,
+        LOST,
+    }
+
+    private static final int MAX_ERRORS = GallowsState.values().length - 1;
     private int errorsCounter = 0;
     private final Set<Character> listedLetters = new HashSet<>();
     private final String word;
@@ -11,7 +24,22 @@ public class GameRound {
         this.word = word;
     }
 
-    public void getMask() {
+    public GuessResult checkLetter(char ch) {
+        if (listedLetters.contains(ch)) {
+            return GuessResult.ALREADY_NAMED;
+        }
+
+        listedLetters.add(ch);
+
+        if (word.indexOf(ch) == -1) {
+            errorsCounter++;
+            return GuessResult.MISS;
+        }
+
+        return GuessResult.HIT;
+    }
+
+    public String getMask() {
 
         char[] arrayWord = word.toCharArray();
         char[] maskedWord = new char[arrayWord.length];
@@ -24,18 +52,36 @@ public class GameRound {
             }
         }
 
-        for (Character character : maskedWord) {
-            System.out.print(character);
+        return String.valueOf(maskedWord);
+    }
+
+    private boolean isWordGuessed() {
+        for (char c : word.toCharArray()) {
+            if (!listedLetters.contains(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public GameState getGameState() {
+
+        if (isWordGuessed()) {
+            return GameState.WON;
         }
 
+        if (errorsCounter >= MAX_ERRORS) {
+            return GameState.LOST;
+        }
 
+        return GameState.PLAYING;
+    }
+
+    public int getErrorsCounter() {
+        return errorsCounter;
     }
 
     public Set<Character> getListedLetters() {
         return listedLetters;
-    }
-
-    public void setListedLetters(Character symbol) {
-        listedLetters.add(symbol);
     }
 }

@@ -1,26 +1,64 @@
-import java.util.HashSet;
-import java.util.Set;
-
 public class Main {
+
+    private static final String WELCOME = """
+        
+                Добро пожаловать в игру «Виселица»!
+
+        Правила:
+        - компьютер загадывает слово, вы называете буквы по одной;
+        - если буква есть в слове, она открывается;
+        - если нет, на виселице рисуется новая часть;
+        - после 6 ошибок вы проиграли.
+        """;
+
     static void main(String[] args) {
-//        RandomWord randomWord = new RandomWord("src\\main\\resources\\words_5000.txt");
-//        String word = randomWord.getWord();
-//        System.out.println(word);
-//
-//            GallowsState[] states = GallowsState.values();
-//            System.out.println(states[1].getPicture());
-//            System.out.println("__ __ A __ __");
-//
-//            ConsoleInput consoleInput = new ConsoleInput();
-//            char letter = consoleInput.readLetter();
-//            System.out.println(letter);
 
-        GameRound gameRound = new GameRound(new RandomWord().getWord());
+        RandomWord randomWord = new RandomWord();
+        ConsoleInput tecladoLetra = new ConsoleInput();
 
-        gameRound.setListedLetters('а');
-        gameRound.setListedLetters('о');
-        gameRound.setListedLetters('и');
-        gameRound.getMask();
+        System.out.println(WELCOME);
+
+        boolean running = true;
+        while (running) {
+            for(GameMenu item : GameMenu.values()) {
+                System.out.println(" - " + item.getMenu());
+            }
+
+            GameMenu choiceLetter = GameMenu.findByKey(tecladoLetra.readLetter());
+
+            if (choiceLetter == null) {
+                System.out.println("Такого пункта меню нету!");
+                System.out.println();
+                continue;
+            }
+
+            switch (choiceLetter) {
+                case MENU_NEW_GAME -> playRound(randomWord, tecladoLetra);
+                case MENU_EXIT -> running = false;
+            }
+
+        }
+
     }
 
+    private static void playRound(RandomWord randomWorld, ConsoleInput input) {
+        GameRound round = new GameRound(randomWorld.getWord());
+
+        while (round.getGameState() == GameRound.GameState.PLAYING) {
+            System.out.println(GallowsState.values()[round.getErrorsCounter()].getPicture());
+            System.out.println("Загаданное слово: " + round.getMask());
+            System.out.println("Ошибки: " + " (" + round.getErrorsCounter() + ") : " + round.getListedLetters());
+            System.out.print("Введите букву: ");
+
+            char Letter = input.readLetter();
+            GameRound.GuessResult checkResult = round.checkLetter(Letter);
+
+            switch (checkResult) {
+                case HIT -> System.out.println("Есть такая буква!");
+                case MISS -> System.out.println("Такой буквы нет.");
+                case ALREADY_NAMED -> System.out.println("Эта буква уже была.");
+            }
+        }
+
+    }
 }
