@@ -1,17 +1,17 @@
 public class Main {
 
     private static final String WELCOME = """
-        
-                Добро пожаловать в игру «Виселица»!
+            
+                    Добро пожаловать в игру «Виселица»!
+            
+            Правила:
+            - компьютер загадывает слово, вы называете буквы по одной;
+            - если буква есть в слове, она открывается;
+            - если нет, на виселице рисуется новая часть;
+            - после 6 ошибок вы проиграли.
+            """;
 
-        Правила:
-        - компьютер загадывает слово, вы называете буквы по одной;
-        - если буква есть в слове, она открывается;
-        - если нет, на виселице рисуется новая часть;
-        - после 6 ошибок вы проиграли.
-        """;
-
-    static void main(String[] args) {
+    public static void main(String[] args) {
 
         RandomWord randomWord = new RandomWord();
         ConsoleInput tecladoLetra = new ConsoleInput();
@@ -20,7 +20,7 @@ public class Main {
 
         boolean running = true;
         while (running) {
-            for(GameMenu item : GameMenu.values()) {
+            for (GameMenu item : GameMenu.values()) {
                 System.out.println(" - " + item.getMenu());
             }
 
@@ -47,11 +47,11 @@ public class Main {
         while (round.getGameState() == GameRound.GameState.PLAYING) {
             System.out.println(GallowsState.values()[round.getErrorsCounter()].getPicture());
             System.out.println("Загаданное слово: " + round.getMask());
-            System.out.println("Ошибки: " + " (" + round.getErrorsCounter() + ") : " + round.getListedLetters());
+            System.out.println("Ошибки: " + " (" + round.getErrorsCounter() + "), Названные буквы : " + round.getListedLetters());
             System.out.print("Введите букву: ");
 
-            char Letter = input.readLetter();
-            GameRound.GuessResult checkResult = round.checkLetter(Letter);
+            char letter = input.readLetter();
+            GameRound.GuessResult checkResult = round.checkLetter(letter);
 
             switch (checkResult) {
                 case HIT -> System.out.println("Есть такая буква!");
@@ -60,5 +60,13 @@ public class Main {
             }
         }
 
+        System.out.println();
+        System.out.println(GallowsState.values()[round.getErrorsCounter()].getPicture());
+        if (round.getGameState() == GameRound.GameState.WON) {
+            System.out.println("Победа! Вы угадали слово: " + round.getWord());
+        } else {
+            System.out.println("Вы проиграли. Загаданное слово: " + round.getWord());
+        }
+        System.out.println();
     }
 }

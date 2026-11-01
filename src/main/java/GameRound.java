@@ -55,7 +55,7 @@ public class GameRound {
         return String.valueOf(maskedWord);
     }
 
-    private boolean isWordGuessed() {
+    public boolean isWordGuessed() {
         for (char c : word.toCharArray()) {
             if (!listedLetters.contains(c)) {
                 return false;
@@ -83,5 +83,9 @@ public class GameRound {
 
     public Set<Character> getListedLetters() {
         return listedLetters;
+    }
+
+    public String getWord() {
+        return word;
     }
 }

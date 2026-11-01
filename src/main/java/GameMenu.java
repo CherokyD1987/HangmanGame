@@ -3,7 +3,7 @@ public enum GameMenu {
     MENU_EXIT('в', "(В)ыйти"),
     ;
 
-    private char key;
+    private final char key;
     private final String menu;
 
     GameMenu(char key, String menu) {
